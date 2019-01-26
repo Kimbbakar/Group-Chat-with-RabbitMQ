@@ -23,23 +23,18 @@ func Send(username string) {
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
 
-	log.Print("Want to Chat with: ")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()  
-	chatWith := scanner.Text()	
-
-	q, err := ch.QueueDeclare(
-		chatWith, // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
-	)
-	failOnError(err, "Failed to declare a queue") 
-
-
-
+	err = ch.ExchangeDeclare(
+		"logs",   // name
+		"fanout", // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
+		false,    // no-wait
+		nil,      // arguments
+	  )
+ 
+	scanner := bufio.NewScanner(os.Stdin)  
+  
 	log.Print("Enter the text: ")
 	for {
 
@@ -48,8 +43,8 @@ func Send(username string) {
 	
 		body := input
 		err = ch.Publish(
-			"",     // exchange
-			q.Name, // routing key
+			"logs",     // exchange
+			"", // routing key
 			false,  // mandatory
 			false,  // immediate
 			amqp.Publishing{

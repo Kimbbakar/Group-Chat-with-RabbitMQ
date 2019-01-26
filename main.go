@@ -5,8 +5,8 @@ import (
 	"log"
 	"os" 	
 	
-	"github.com/kimbbakar/rest-api/Chat-App-With-RabbitMQ/send"
-	"github.com/kimbbakar/rest-api/Chat-App-With-RabbitMQ/receive"
+	"github.com/kimbbakar/Group-Chat-with-RabbitMQ/send"
+	"github.com/kimbbakar/Group-Chat-with-RabbitMQ/receive"
 )
  
 

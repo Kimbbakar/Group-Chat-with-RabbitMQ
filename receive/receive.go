@@ -19,18 +19,25 @@ func Receive(username string) {
 	ch, err := conn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
- 
-
 
 	q, err := ch.QueueDeclare(
-		username, // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
-	)
+		"",    // name
+		false, // durable
+		false, // delete when usused
+		true,  // exclusive. queue will be deleted after connection close 
+		false, // no-wait
+		nil,   // arguments
+	  )	
+
 	failOnError(err, "Failed to declare a queue")
+
+	err = ch.QueueBind(
+		q.Name, // queue name
+		"",     // routing key
+		"logs", // exchange
+		false,
+		nil,
+	  )
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
